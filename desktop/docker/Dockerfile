@@ -21,7 +21,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mousepad \
     xdotool \
     dbus-x11 \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt --break-system-packages
 
 # Install noVNC
 RUN git clone --depth 1 https://github.com/novnc/noVNC.git /opt/novnc \
