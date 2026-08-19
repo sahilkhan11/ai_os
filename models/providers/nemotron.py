@@ -78,4 +78,30 @@ class NemotronProvider(ModelProvider):
         return self.send(messages, tools=tools)
 
     def vision(self, image_path: str, prompt: str) -> str:
-        raise NotImplementedError("Vision is not yet implemented for NemotronProvider (requires OmniParser bridge).")
+        """Process an image using OmniParser and return the model's understanding."""
+        # Initialize OmniParser wrapper here to avoid loading models until needed
+        from computer.vision.omniparser import OmniParserBridge
+        import json
+        
+        parser = OmniParserBridge()
+        parsed_content_list, latency = parser.parse(image_path)
+        
+        # Format the structured list into text for the LLM
+        formatted_elements = json.dumps(parsed_content_list, indent=2)
+        
+        augmented_prompt = (
+            f"{prompt}\n\n"
+            f"Here are the visual elements detected on the screen by OmniParser:\n"
+            f"{formatted_elements}\n\n"
+            f"Please use these coordinates and labels to answer the request."
+        )
+        
+        messages = [
+            {"role": "user", "content": augmented_prompt}
+        ]
+        
+        response = self.send(messages)
+        
+        # Inject latency into the response for benchmarking purposes
+        response["omniparser_latency"] = latency
+        return response
