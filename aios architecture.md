@@ -246,7 +246,7 @@ Per §38, the MVP is **not** "Docker starts, browser opens, model can click thin
 ## 6. Repository Structure
 
 ```
-ai-computer/
+ai-os/
 │
 ├── agent/
 │   ├── planner/          # goal → subgoal decomposition

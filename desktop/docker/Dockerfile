@@ -17,6 +17,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     x11vnc \
     python3 \
     python3-numpy \
+    scrot \
+    mousepad \
+    xdotool \
+    dbus-x11 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install noVNC
@@ -32,7 +36,7 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearm
 
 # Copy startup script
 COPY desktop/linux/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 # Create workspace directory
 RUN mkdir -p /workspace
