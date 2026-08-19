@@ -1,0 +1,12 @@
+services:
+  ai-computer:
+    build:
+      context: .
+      dockerfile: desktop/docker/Dockerfile
+    container_name: ai_computer_runtime
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./workspace:/workspace
+    shm_size: 2g # Important: prevents Chrome from crashing due to shared memory limits
+    restart: unless-stopped
